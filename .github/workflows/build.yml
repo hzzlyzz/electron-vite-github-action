@@ -57,17 +57,17 @@ jobs:
       - name: Cleanup Artifacts for windows
         if: matrix.os == 'windows-latest'
         run: |
-          npx rimraf "release/!(*.exe|*.exe.blockmap|latest.yml)"
+          npx rimraf "release/!(*.exe|latest.yml)"
 
       - name: Cleanup Artifacts for macos
         if: matrix.os == 'macos-latest'
         run: |
-          npx rimraf "release/!(*.dmg|*.dmg.blockmap|latest-mac.yml)"
+          npx rimraf "release/!(*.dmg|latest-mac.yml)"
 
       - name: Cleanup Artifacts for linux
         if: matrix.os == 'ubuntu-latest'
         run: |
-          npx rimraf "release/!(*.AppImage|*.AppImage.blockmap|latest-linux.yml)"
+          npx rimraf "release/!(*.AppImage|latest-linux.yml)"
 
       # - name: Upload Artifact
       #   uses: actions/upload-artifact@v3
@@ -83,3 +83,5 @@ jobs:
           files: release/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        permissions:
+          contents: write
