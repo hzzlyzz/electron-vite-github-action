@@ -57,20 +57,20 @@ jobs:
       #   id: package
       #   uses: codex-team/action-nodejs-package-info@v1.1
 
-      - name: Cleanup Artifacts for windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          npx rimraf "release/!(*.exe|latest.yml)"
+      # - name: Cleanup Artifacts for windows
+      #   if: matrix.os == 'windows-latest'
+      #   run: |
+      #     npx rimraf "release/!(*.exe|latest.yml)"
 
-      - name: Cleanup Artifacts for macos
-        if: matrix.os == 'macos-latest'
-        run: |
-          npx rimraf "release/!(*.dmg|latest-mac.yml)"
+      # - name: Cleanup Artifacts for macos
+      #   if: matrix.os == 'macos-latest'
+      #   run: |
+      #     npx rimraf "release/!(*.dmg|latest-mac.yml)"
 
-      - name: Cleanup Artifacts for linux
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          npx rimraf "release/!(*.AppImage|latest-linux.yml)"
+      # - name: Cleanup Artifacts for linux
+      #   if: matrix.os == 'ubuntu-latest'
+      #   run: |
+      #     npx rimraf "release/!(*.AppImage|latest-linux.yml)"
 
       # - name: Upload Artifact
       #   uses: actions/upload-artifact@v3
@@ -79,10 +79,35 @@ jobs:
       #     path: release/
       #     retention-days: 5
       
-      - name: Release
+      - name: Release for windows
+        if: matrix.os == 'windows-latest'
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: release/**
+          files: |
+            release/*.exe
+            release/latest.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Release for macos
+        if: matrix.os == 'macos-latest'
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            release/*.dmg
+            release/latest-mac.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Release for linux
+        if: matrix.os == 'ubuntu-latest'
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            release/*.AppImage
+            release/latest-linux.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
