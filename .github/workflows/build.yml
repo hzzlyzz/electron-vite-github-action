@@ -2,9 +2,9 @@ name: Build
 
 on:
   push:
-    # branches: [master]
-    tags:
-      - "v*.*.*"
+    branches: [master]
+    # tags:
+    #   - "v*.*.*"
     paths-ignore:
       - "**.md"
       - "**.spec.js"
@@ -53,58 +53,54 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Get Version
-      #   id: package
-      #   uses: codex-team/action-nodejs-package-info@v1.1
+      - name: Cleanup Artifacts for windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          npx rimraf "release/!(*.exe|latest.yml)"
 
-      # - name: Cleanup Artifacts for windows
-      #   if: matrix.os == 'windows-latest'
-      #   run: |
-      #     npx rimraf "release/!(*.exe|latest.yml)"
+      - name: Cleanup Artifacts for macos
+        if: matrix.os == 'macos-latest'
+        run: |
+          npx rimraf "release/!(*.dmg|latest-mac.yml)"
 
-      # - name: Cleanup Artifacts for macos
-      #   if: matrix.os == 'macos-latest'
-      #   run: |
-      #     npx rimraf "release/!(*.dmg|latest-mac.yml)"
+      - name: Cleanup Artifacts for linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          npx rimraf "release/!(*.AppImage|latest-linux.yml)"
 
-      # - name: Cleanup Artifacts for linux
-      #   if: matrix.os == 'ubuntu-latest'
-      #   run: |
-      #     npx rimraf "release/!(*.AppImage|latest-linux.yml)"
-
-      # - name: Upload Artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: release_on_${{ matrix.os }}
-      #     path: release/
-      #     retention-days: 5
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: release_on_${{ matrix.os }}
+          path: release/
+          # retention-days: 5
       
-      - name: Release for windows
-        if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'windows-latest'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            release/*.exe
-            release/latest.yml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Release for windows
+      #   if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'windows-latest'
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     files: |
+      #       release/*.exe
+      #       release/latest.yml
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Release for macos
-        if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'macos-latest'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            release/*.dmg
-            release/latest-mac.yml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Release for macos
+      #   if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'macos-latest'
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     files: |
+      #       release/*.dmg
+      #       release/latest-mac.yml
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Release for linux
-        if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'ubuntu-latest'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            release/*.AppImage
-            release/latest-linux.yml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Release for linux
+      #   if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'ubuntu-latest'
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     files: |
+      #       release/*.AppImage
+      #       release/latest-linux.yml
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
