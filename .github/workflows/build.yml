@@ -56,7 +56,7 @@ jobs:
       - name: Cleanup Artifacts for windows
         if: matrix.os == 'windows-latest'
         run: |
-          npx rimraf "release/!(*.exe|latest.yml)"
+          npx rimraf "release/\!(*.exe\|latest.yml)"
 
       - name: Cleanup Artifacts for macos
         if: matrix.os == 'macos-latest'
