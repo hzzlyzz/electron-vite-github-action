@@ -75,8 +75,8 @@ jobs:
       #     path: release/
           # retention-days: 5
       
-      - if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'windows-latest'
-        name: Release for windows
+      - name: Release for windows
+        if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'windows-latest'
         uses: softprops/action-gh-release@v1
         with:
           files: |
@@ -85,8 +85,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-      - if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'macos-latest'
-        name: Release for macos
+      - name: Release for macos
+        if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'macos-latest'
         uses: softprops/action-gh-release@v1
         with:
           files: |
@@ -95,8 +95,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'ubuntu-latest'
-        name: Release for linux
+      - name: Release for linux
+        if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'ubuntu-latest'
         uses: softprops/action-gh-release@v1
         with:
           files: |
